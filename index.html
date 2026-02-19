@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 検索エンジン向け設定 (SEO) -->
+    <title>卒業式カウントダウン</title>
+    <meta name="description" content="2026年3月13日の卒業式まであと何日かを表示します。">
+    <meta name="keywords" content="卒業式,カウントダウン,あと何日">
+    
+    <!-- SNS共有用設定 (OGP) -->
+    <meta property="og:title" content="卒業式カウントダウン">
+    <meta property="og:description" content="3月13日の卒業式まで、あと何日？">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #fffafa 0%, #ffeef2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .serif-bold {
+            font-family: 'Noto Serif JP', serif;
+            font-weight: 900;
+        }
+
+        .sakura {
+            position: absolute;
+            background-color: #ffc0cb;
+            border-radius: 100% 0 100% 0;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(110vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .display-container {
+            z-index: 10;
+            text-align: center;
+        }
+
+        .day-number {
+            font-size: clamp(8rem, 35vw, 20rem);
+            line-height: 0.9;
+            background: linear-gradient(to bottom, #db2777, #9d174d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 15px rgba(219, 39, 119, 0.1));
+        }
+
+        .unit-text {
+            font-size: clamp(3rem, 10vw, 6rem);
+            color: #9d174d;
+            margin-left: 0.2em;
+        }
+
+        .top-label {
+            letter-spacing: 0.8em;
+            text-indent: 0.8em;
+            color: #be185d;
+            opacity: 0.6;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sakura-container" class="fixed inset-0 pointer-events-none"></div>
+
+    <div class="display-container">
+        <div class="top-label serif-bold">卒業式まで</div>
+        
+        <div id="countdown-wrapper" class="flex items-baseline justify-center">
+            <span class="serif-bold text-4xl md:text-6xl text-pink-700 mr-4 opacity-80">あと</span>
+            <span id="days" class="serif-bold day-number">--</span>
+            <span class="serif-bold unit-text">日</span>
+        </div>
+
+        <div class="mt-16 text-pink-300 font-medium tracking-[0.3em] text-sm md:text-base">
+            2026.03.13
+        </div>
+    </div>
+
+    <script>
+        const targetDate = new Date('2026-03-13T00:00:00');
+
+        function update() {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const targetDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+            
+            const diffTime = targetDay - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            const display = document.getElementById('days');
+            const wrapper = document.getElementById('countdown-wrapper');
+
+            if (diffDays < 0) {
+                wrapper.innerHTML = `<span class="serif-bold day-number" style="font-size: clamp(4rem, 15vw, 10rem)">祝 卒業</span>`;
+            } else {
+                display.innerText = diffDays;
+            }
+        }
+
+        function createSakura() {
+            const container = document.getElementById('sakura-container');
+            if (container.children.length > 40) return;
+
+            const petal = document.createElement('div');
+            petal.className = 'sakura';
+            
+            const size = Math.random() * 7 + 8 + 'px';
+            petal.style.width = size;
+            petal.style.height = size;
+            petal.style.left = Math.random() * 100 + 'vw';
+            
+            const duration = Math.random() * 5 + 7 + 's';
+            petal.style.animation = `fall ${duration} linear forwards`;
+
+            container.appendChild(petal);
+            setTimeout(() => petal.remove(), 12000);
+        }
+
+        update();
+        setInterval(update, 60000);
+        setInterval(createSakura, 600);
+        for(let i=0; i<10; i++) createSakura();
+    </script>
+</body>
+</html>
