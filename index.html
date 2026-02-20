@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- 検索エンジン向け設定 (SEO) -->
-    <title>卒業式カウントダウン</title>
+    <!-- 検索エンジン向け設定 (SEO) - 変更なし -->
+    <title>卒業式カウントダウン | 3月13日まであと何日？</title>
     <meta name="description" content="2026年3月13日の卒業式まであと何日かを表示します。">
     <meta name="keywords" content="卒業式,カウントダウン,あと何日">
     
@@ -60,7 +60,7 @@
         }
 
         .day-number {
-            font-size: clamp(8rem, 35vw, 20rem);
+            font-size: clamp(8rem, 30vw, 18rem);
             line-height: 0.9;
             background: linear-gradient(to bottom, #db2777, #9d174d);
             -webkit-background-clip: text;
@@ -69,7 +69,7 @@
         }
 
         .unit-text {
-            font-size: clamp(3rem, 10vw, 6rem);
+            font-size: clamp(2.5rem, 8vw, 5rem);
             color: #9d174d;
             margin-left: 0.2em;
         }
@@ -82,6 +82,17 @@
             font-size: clamp(1rem, 3vw, 1.5rem);
             margin-bottom: 2rem;
         }
+
+        .detail-info {
+            margin-top: 2rem;
+            color: #be185d;
+            font-weight: 700;
+            font-size: clamp(1rem, 4vw, 1.25rem);
+            opacity: 0.7;
+            border-top: 1px solid rgba(190, 24, 93, 0.1);
+            padding-top: 1.5rem;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -91,13 +102,19 @@
     <div class="display-container">
         <div class="top-label serif-bold">卒業式まで</div>
         
-        <div id="countdown-wrapper" class="flex items-baseline justify-center">
-            <span class="serif-bold text-4xl md:text-6xl text-pink-700 mr-4 opacity-80">あと</span>
-            <span id="days" class="serif-bold day-number">--</span>
-            <span class="serif-bold unit-text">日</span>
+        <div id="countdown-wrapper" class="flex flex-col items-center justify-center">
+            <div class="flex items-baseline">
+                <span class="serif-bold text-3xl md:text-5xl text-pink-700 mr-4 opacity-80">あと</span>
+                <span id="days" class="serif-bold day-number">--</span>
+                <span class="serif-bold unit-text">日</span>
+            </div>
+            
+            <div id="weekday-wrapper" class="detail-info">
+                （土日を除くと、あと <span id="weekday-days">--</span> 日）
+            </div>
         </div>
 
-        <div class="mt-16 text-pink-300 font-medium tracking-[0.3em] text-sm md:text-base">
+        <div class="mt-12 text-pink-300 font-medium tracking-[0.3em] text-sm md:text-base">
             2026.03.13
         </div>
     </div>
@@ -111,15 +128,31 @@
             const targetDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
             
             const diffTime = targetDay - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const diffTotalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
             const display = document.getElementById('days');
+            const weekdayDisplay = document.getElementById('weekday-days');
             const wrapper = document.getElementById('countdown-wrapper');
 
-            if (diffDays < 0) {
+            if (diffTotalDays < 0) {
                 wrapper.innerHTML = `<span class="serif-bold day-number" style="font-size: clamp(4rem, 15vw, 10rem)">祝 卒業</span>`;
             } else {
-                display.innerText = diffDays;
+                // 総日数を表示
+                display.innerText = diffTotalDays;
+
+                // 土日を除いた平日のみの日数を計算
+                let weekdayCount = 0;
+                let tempDate = new Date(today);
+                
+                for (let i = 0; i < diffTotalDays; i++) {
+                    const dayOfWeek = tempDate.getDay(); // 0:日, 6:土
+                    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                        weekdayCount++;
+                    }
+                    tempDate.setDate(tempDate.getDate() + 1);
+                }
+                
+                weekdayDisplay.innerText = weekdayCount;
             }
         }
 
